@@ -16,9 +16,15 @@
     p = Post.objects.get(id=2)
     p.publish()
     p.published_data
+
+3. post_list에 빈 리스트가 전달될 경우, 템플릿에서 포스트 없음을 출력
+   테스트는 127.0.0.1:8000/admin에서 Posts에 올린 것들 모두,
+    시간 설정을 없애면 post_list.html templates에서 포스트 없음이 출력되는지
+    확인해 볼 수 있다.
 """
 
 from django.shortcuts import render
+from django.utils import timezone
 
 from .models import Post
 
@@ -27,6 +33,7 @@ from .models import Post
 def post_list(request):
     context = {
         # 객체를 넘겨줄 때는 '_'로 구분
-        'post_list': Post.objects.all(),
+        'post_list': Post.objects.filter(
+            published_data__lte=timezone.now())
     }
     return render(request, 'blog/post_list.html', context)

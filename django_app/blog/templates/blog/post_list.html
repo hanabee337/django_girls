@@ -10,6 +10,8 @@
             <h1>{{ post.title }}</h1>
             <h3>{{ post.content }}</h3>
         {% endfor %}
+    {% else %}
+        <p>No Post</p>
     {% endif %}
 </body>
 </html>
