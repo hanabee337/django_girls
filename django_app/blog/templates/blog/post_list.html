@@ -5,7 +5,11 @@
     <title>My Blog</title>
 </head>
 <body>
-<h1>Hi Hello World</h1>
-<h3>This is Django Girls Tutorial Practice</h3>
+    {% if post_list %}
+        {% for post in post_list %}
+            <h1>{{ post.title }}</h1>
+            <h3>{{ post.content }}</h3>
+        {% endfor %}
+    {% endif %}
 </body>
 </html>
