@@ -8,7 +8,7 @@
     {% if post_list %}
         {% for post in post_list %}
             <h1>{{ post.title }}</h1>
-            <h3>{{ post.content }}</h3>
+            <h3>{{ post.content | truncatechars:200}}</h3>
         {% endfor %}
     {% else %}
         <p>No Post</p>

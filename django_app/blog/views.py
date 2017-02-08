@@ -24,7 +24,6 @@
 """
 
 from django.shortcuts import render
-from django.utils import timezone
 
 from .models import Post
 
@@ -32,8 +31,10 @@ from .models import Post
 # urls.py에서 호출되어 실행
 def post_list(request):
     context = {
-        # 객체를 넘겨줄 때는 '_'로 구분
-        'post_list': Post.objects.filter(
-            published_data__lte=timezone.now())
+    #     # 객체를 넘겨줄 때는 '_'로 구분
+    #     'post_list': Post.objects.filter(
+    #         published_data__lte=timezone.now())
+    'post_list': Post.objects.all()
+
     }
     return render(request, 'blog/post_list.html', context)
