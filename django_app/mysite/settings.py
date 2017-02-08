@@ -24,6 +24,11 @@ STATICFILES_DIRS = [
 print('BASE_DIR : %s' % BASE_DIR)
 print('STATIC_DIR : %s' % STATIC_DIR)
 
+
+#템플릿을 저장할 디렉토리
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -63,7 +68,9 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATES_DIR,
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

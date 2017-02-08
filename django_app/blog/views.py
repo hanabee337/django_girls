@@ -1,6 +1,6 @@
-from django.http import HttpResponse
-
-
 # urls.py에서 호출되어 실행
+from django.shortcuts import render
+
+
 def post_list(request):
-    return HttpResponse('post_list view')
+    return render(request, 'blog/post_list.html')
