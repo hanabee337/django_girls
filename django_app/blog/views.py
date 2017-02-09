@@ -34,7 +34,6 @@ Detail View를 만들어 봅니다.
     4. 템플릿에 post-detail.html을 만들고,
         인자로 전달된 Post 객체에 title, content, created_data, published_data 출력
 """
-from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import Post
@@ -51,16 +50,21 @@ def post_list(request):
     }
     return render(request, 'blog/post_list.html', context)
 
+
 # post_id에 관해...
 # post_detail 함수의 2번째 인자인 post_id는 urls.py에서 넘어온 인자인데,
 # 여기서 post_id라는 인자는 임의의 이름이다. 따라서, 다른 이름으로 해도 상관없다.
 # urls.py의 url이 넘져주는 인자의 갯수와 post_detail함수의 인자 갯수와 같아야 한다.
 # post_id에 관한 테스트.
-def post_detail(request, pst, any_str):
-    return HttpResponse('post_detail, post_id: {}, any_str:{}'.format(pst, any_str))
-# def post_detail(request, post_id):
-    # return HttpResponse('post_detail, post_id: {}'.format(post_id))
-    # context = {
-    #     'post_detail': Post.objects.get(id=post_id)
-    # }
-    # return render(request, 'blog/post-detail.html', context)
+# def post_detail(request, pst, any_str):
+# return HttpResponse('post_detail, post_id: {}, any_str:{}'.format(pst, any_str))
+def post_detail(request, post_id):
+    #ORM을 이용해서 id가 전달받은 post_id와 일치하는 Post객체를 post변수에 전달
+    post = Post.objects.get(id=post_id)
+    # 전달할 context 딕셔너리의 키 'post_detail'에 post변수를 전달
+    context = {
+        # 'post_detail' 이 이름이 post-detail.html의 post_detail과 동일한 이름을 가져야 한다.
+        'post_detail': post
+    }
+    # blog/post-detail.html 템플릿을 render한 결과를 리턴
+    return render(request, 'blog/post-detail.html', context)
