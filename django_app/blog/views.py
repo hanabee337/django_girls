@@ -21,8 +21,19 @@
    테스트는 127.0.0.1:8000/admin에서 Posts에 올린 것들 모두,
     시간 설정을 없애면 post_list.html templates에서 포스트 없음이 출력되는지
     확인해 볼 수 있다.
-"""
 
+Detail View를 만들어 봅니다.
+    1. View에 post_detail 함수 추가
+        post_detail은 인자로 post_id를 받는다.
+    2. urls.py에 해당 view와 연결하는 url을 추가
+        정규식표현으로 패턴네임 post_id 이름을 갖는 숫자 1개이상의 패턴을 등록
+    3. post_detail 뷰가 원하는 URL에서 잘 출력되는지 확인 후(stub 메서드 사용)
+        get 퀴리셋을 사용해서 (Post.objects.get(...))
+        id 값이 인자로 전달된 post_id 와 같은 Post 객체를 context에 담아
+        post-detail.html을 render 한 결과를 리턴
+    4. 템플릿에 post-detail.html을 만들고,
+        인자로 전달된 Post 객체에 title, content, created_data, published_data 출력
+"""
 from django.shortcuts import render
 
 from .models import Post
@@ -31,10 +42,18 @@ from .models import Post
 # urls.py에서 호출되어 실행
 def post_list(request):
     context = {
-    #     # 객체를 넘겨줄 때는 '_'로 구분
-    #     'post_list': Post.objects.filter(
-    #         published_data__lte=timezone.now())
-    'post_list': Post.objects.all()
+        #     # 객체를 넘겨줄 때는 '_'로 구분
+        #     'post_list': Post.objects.filter(
+        #         published_data__lte=timezone.now())
+        'post_list': Post.objects.all()
 
     }
     return render(request, 'blog/post_list.html', context)
+
+
+def post_detail(request, post_id):
+    # return HttpResponse('post_detail')
+    context = {
+        'post_detail': Post.objects.get(id=post_id)
+    }
+    return render(request, 'blog/post-detail.html', context)
