@@ -5,6 +5,12 @@
     <title>Post Detail</title>
 </head>
 <body>
+<!--
+템플릿 태그 'url'을 사용해서 Post List로 돌아가는 a요소를 구현
+post_list는 인자가 없어서 name만(name='post_list') 있어도 된다.
+-->
+<a href="{% url 'post_list' %}">Back To List</a>
+
 <!--views의 post_detail 함수에 있는 context의 'post_detail' 이름과
     동일해야 정상 동작함.-->
 <h1>{{ post_detail.title }}</h1>
