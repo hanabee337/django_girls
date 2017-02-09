@@ -59,11 +59,13 @@ def post_list(request):
 # def post_detail(request, pst, any_str):
 # return HttpResponse('post_detail, post_id: {}, any_str:{}'.format(pst, any_str))
 def post_detail(request, post_id):
-    #ORM을 이용해서 id가 전달받은 post_id와 일치하는 Post객체를 post변수에 전달
+    # ORM을 이용해서 id가 전달받은 post_id와 일치하는 Post객체를 post변수에 전달
     post = Post.objects.get(id=post_id)
     # 전달할 context 딕셔너리의 키 'post_detail'에 post변수를 전달
     context = {
         # 'post_detail' 이 이름이 post-detail.html의 post_detail과 동일한 이름을 가져야 한다.
+        # 즉, post_detail함수에서는 context 딕셔너리 키 값 'post-detail'을
+        # post-detail.html templates에 리턴해준다
         'post_detail': post
     }
     # blog/post-detail.html 템플릿을 render한 결과를 리턴
