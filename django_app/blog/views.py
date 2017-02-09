@@ -34,7 +34,8 @@ Detail View를 만들어 봅니다.
     4. 템플릿에 post-detail.html을 만들고,
         인자로 전달된 Post 객체에 title, content, created_data, published_data 출력
 """
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
 
 from .models import Post
 
@@ -59,8 +60,19 @@ def post_list(request):
 # def post_detail(request, pst, any_str):
 # return HttpResponse('post_detail, post_id: {}, any_str:{}'.format(pst, any_str))
 def post_detail(request, post_id):
-    # ORM을 이용해서 id가 전달받은 post_id와 일치하는 Post객체를 post변수에 전달
-    post = Post.objects.get(id=post_id)
+    # Error Handling (1)
+    # try:
+    #     # ORM을 이용해서 id가 전달받은 post_id와 일치하는 Post객체를 post변수에 전달
+    #     post = Post.objects.get(id=post_id)
+    # except Post.DoesNotExist as e:
+    #     # DoesNotExist 예외 발생시 해당 예외를 리턴
+    #     return HttpResponse(e)
+
+    # Error Handling (2)
+    # 어떤 경우에는 해당 객체에 대한 pk 즉, id가 없는 경우가 있다.
+    # 이런 경우에도 대응할 수 있는 좀 편하게 쓸 수 있는 방법이
+    post = get_object_or_404(Post, id=post_id)
+
     # 전달할 context 딕셔너리의 키 'post_detail'에 post변수를 전달
     context = {
         # 'post_detail' 이 이름이 post-detail.html의 post_detail과 동일한 이름을 가져야 한다.
