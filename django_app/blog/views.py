@@ -82,3 +82,18 @@ def post_detail(request, post_id):
     }
     # blog/post-detail.html 템플릿을 render한 결과를 리턴
     return render(request, 'blog/post-detail.html', context)
+
+
+
+
+# Mission :
+# 1. view
+#     def post_add(request)
+# 2. url
+#     post/add/, name='post_add'
+# 3. 상기 조건에 맞게 view와 url을 작성한 다음,
+#     post-add.html이랑 연결을 해보자.
+# 4. post_list.html에서 'Write Post' 버튼을 만들고,
+#  해당 버튼에 post_add로 가는 링크 생성
+def post_add(request):
+    return render(request, 'blog/post-add.html')

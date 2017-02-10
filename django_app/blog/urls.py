@@ -24,4 +24,15 @@ urlpatterns = [
     url(r'^post/detail/(?P<post_id>[0-9]+)/', views.post_detail, name='post_detail'),
     # 여기서의 post_id가 키워드 인자값이 되어 template이나 view에서 ReverseMatch하는데 이용된다.
     # 여기서 키워드 인자 값을 보내주면, 여기 name을 이용해서 url패턴을 만들어 낸다.
+
+    # Mission
+    # 1. view
+    #     def post_add(request)
+    # 2. url
+    #     post/add/, name='post_add'
+    # 3. 상기 조건에 맞게 view와 url을 작성한 다음,
+    #     post-add.html이랑 연결을 해보자.
+    # 4. post_list.html에서 'Write Post' 버튼을 만들고,
+    #  해당 버튼에 post_add로 가는 링크 생성
+    url(r'^post/add/', views.post_add, name='post_add'),
 ]
