@@ -34,6 +34,7 @@ Detail View를 만들어 봅니다.
     4. 템플릿에 post-detail.html을 만들고,
         인자로 전달된 Post 객체에 title, content, created_data, published_data 출력
 """
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
@@ -96,4 +97,47 @@ def post_detail(request, post_id):
 # 4. post_list.html에서 'Write Post' 버튼을 만들고,
 #  해당 버튼에 post_add로 가는 링크 생성
 def post_add(request):
-    return render(request, 'blog/post-add.html')
+
+    # 요청의 method가 POST인 경우,
+    # 요청받은 데이터 출력
+    if request.method == 'POST':
+        print(request.POST)
+        # request.POST는 딕셔너리 형태
+        data = request.POST
+        # 'input_title' 과 'input_content'는 키 값인데,
+        # 어디서 만들어졌냐?하면,
+        # post-add.html의 input/textarea 요소의 name으로 데이터의 키 값을 만들었다.
+        # 그래서, 만약에 post-add.html에서 해당 요소의 name을 바꾸면,
+        # 여기서도 거기에 맞게 수정해야 한다.
+        title = data['input_title']
+        content = data['input_content']
+        author = User.objects.get(id=1)
+        print(title, content, author)
+        ret = ','.join([title, content])
+        # return HttpResponse(ret)
+
+        # 지금 조건에서 http://127.0.0.1:8000/post/add/ 로 접속하면 하기와 같은 에러가 발생함.
+        # MultiValueDictKeyError
+        # at  /post/add/
+        # "'input_title'"
+        # 이유는 request.POST를 가져왔는데, 그 안에 'input_title'이 있어서,
+        # 에러가 난 것임
+        # 해결 방법 : 한 페이지 안에서 페이지를 보여주는 것과 데이터를 받아서 처리하는 것을
+        # request의 method에 따라 처리를 달리 해줘야 함.
+
+
+        # Mission : 받은 데이터를 사용해서 Post 객체 생성
+        #'Post created' 메세지 출력
+        p = Post(title=title, content=content, author=author)
+        p.save()
+        return HttpResponse('Post created')
+        # 위의 Post나 밑의 objects.create나 Post 객체를 만드는 것은 동일함.
+        # 그러나, Post로 하면 save까지 포함, create으로 하면, save까지 해야 함
+        # Post.objects.create(title=title, content=content, author=author)
+
+
+    # 요청의 method가 POST가 아닌 경우,
+    # 글 쓰기 양식이 있는 템플릿을 렌더해서 리턴
+    else:
+        # request의 method에 따른 방법. 여기서는 페이지를 보여주는 부분
+        return render(request, 'blog/post-add.html')
