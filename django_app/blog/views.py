@@ -36,7 +36,7 @@ Detail View를 만들어 봅니다.
 """
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Post
 
@@ -130,11 +130,21 @@ def post_add(request):
         #'Post created' 메세지 출력
         p = Post(title=title, content=content, author=author)
         p.save()
-        return HttpResponse('Post created')
+        # return HttpResponse('Post created')
         # 위의 Post나 밑의 objects.create나 Post 객체를 만드는 것은 동일함.
         # 그러나, Post로 하면 save까지 포함, create으로 하면, save까지 해야 함
         # Post.objects.create(title=title, content=content, author=author)
 
+        # redirect('/post')라고 입력하면 하드 코딩(고정된 URL)이라, 비효율적임.
+        # 따라서, 하기와 같이 동적으로 입력하기 위해선,
+        # URL 패턴의 name을 입력해야 하는데,
+        # 이 때, redirect는 받은 인자가 URL이 아니므로, urls.py에서 이 이름을 찾음.
+        # 이름을 갖고 찾은 url로 가라고 browser에게 전달함.
+        return redirect('post_list')
+        # redirect 메서드는 인자로 주어진
+        # URL 또는
+        # urlpatterns의 name을 이용해 만들어낸 URL을 사용해서
+        # 브라우저가 해당 URL로 이동하도록 해줌.
 
     # 요청의 method가 POST가 아닌 경우,
     # 글 쓰기 양식이 있는 템플릿을 렌더해서 리턴
