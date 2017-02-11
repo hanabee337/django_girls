@@ -141,11 +141,13 @@ def post_add(request):
         # 이 때, redirect는 받은 인자를 확인해보니,
         # URL이 아니므로, 이 인자(여기선 name)를 urls.py에서 찾음.
         # 이름을 갖고 찾은 url로 가라고 browser에게 전달함.
-        return redirect('post_list')
+        # return redirect('post_list')
         # redirect 메서드는 인자로 주어진
         # URL 또는
         # urlpatterns의 name을 이용해 만들어낸 URL을 사용해서
         # 브라우저가 해당 URL로 이동하도록 해줌.
+        # redirect는 인자를 URL로도 받을 수 있음.
+        return redirect('http://www.google.co.kr')
 
     # 요청의 method가 POST가 아닌 경우,
     # 글 쓰기 양식이 있는 템플릿을 렌더해서 리턴
