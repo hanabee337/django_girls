@@ -40,6 +40,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Post
 
+from .forms import PostForm
+
 
 # urls.py에서 호출되어 실행
 def post_list(request):
@@ -109,65 +111,84 @@ def post_add(request):
         # post-add.html의 input/textarea 요소의 name으로 데이터의 키 값을 만들었다.
         # 그래서, 만약에 post-add.html에서 해당 요소의 name을 바꾸면,
         # 여기서도 거기에 맞게 수정해야 한다.
-        title = data['input_title']
-        content = data['input_content']
+        # title = data['input_title']
+        # content = data['input_content']
+        # PostForm에 data인자로 request.POST 데이터를 전달해준다.
+        form = PostForm(data=request.POST)
         author = User.objects.get(id=1)
-        print(title, content, author)
-        ret = ','.join([title, content])
+        # print(title, content, author)
+        # ret = ','.join([title, content])
         # return HttpResponse(ret)
 
-        # 지금 조건에서 http://127.0.0.1:8000/post/add/ 로 접속하면 하기와 같은 에러가 발생함.
-        # MultiValueDictKeyError
-        # at  /post/add/
-        # "'input_title'"
-        # 이유는 request.POST를 가져왔는데, 그 안에 'input_title'이 있어서,
-        # 에러가 난 것임
-        # 해결 방법 : 한 페이지 안에서 페이지를 보여주는 것과 데이터를 받아서 처리하는 것을
-        # request의 method에 따라 처리를 달리 해줘야 함.
+        # 만약, PostForm 객체가 유효할 경우(전달된 데이터의 형식이 PostForm이 정의된 형식과 맞을 경우)
+        if form.is_valid():
+            # 유효데이터 중 'title'과 'content'키의 값들을 변수에 전달
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+
+            # 지금 조건에서 http://127.0.0.1:8000/post/add/ 로 접속하면 하기와 같은 에러가 발생함.
+            # MultiValueDictKeyError
+            # at  /post/add/
+            # "'input_title'"
+            # 이유는 request.POST를 가져왔는데, 그 안에 'input_title'이 있어서,
+            # 에러가 난 것임
+            # 해결 방법 : 한 페이지 안에서 페이지를 보여주는 것과 데이터를 받아서 처리하는 것을
+            # request의 method에 따라 처리를 달리 해줘야 함.
 
 
-        # Mission : 받은 데이터를 사용해서 Post 객체 생성
-        #'Post created' 메세지 출력
-        p = Post(title=title, content=content, author=author)
-        p.save()
-        # return HttpResponse('Post created')
-        # 위의 Post나 밑의 objects.create나 Post 객체를 만드는 것은 동일함.
-        # 그러나, Post로 하면 save까지 해줘야 함. create으로 하면, save까지 해줌
-        # Post.objects.create(title=title, content=content, author=author)
+            # Mission : 받은 데이터를 사용해서 Post 객체 생성
+            #'Post created' 메세지 출력
+            p = Post(title=title, content=content, author=author)
+            p.save()
+            # return HttpResponse('Post created')
+            # 위의 Post나 밑의 objects.create나 Post 객체를 만드는 것은 동일함.
+            # 그러나, Post로 하면 save까지 해줘야 함. create으로 하면, save까지 해줌
+            # Post.objects.create(title=title, content=content, author=author)
 
-        # redirect('/post')라고 입력하면 하드 코딩(고정된 URL)이라, 비효율적임.
-        # 따라서, 하기와 같이 동적으로 입력하기 위해선,
-        # URL 패턴의 name을 입력해야 하는데,
-        # 이 때, redirect는 받은 인자를 확인해보니,
-        # URL이 아니므로, 이 인자(여기선 name)를 urls.py에서 찾음.
-        # 이름을 갖고 찾은 url로 가라고 browser에게 전달함.
-        # return redirect('post_list')
-        # redirect 메서드는 인자로 주어진
-        # URL 또는
-        # urlpatterns의 name을 이용해 만들어낸 URL을 사용해서
-        # 브라우저가 해당 URL로 이동하도록 해줌.
-        # redirect는 인자를 URL로도 받을 수 있음.
-        # return redirect('http://www.google.co.kr')
+            # redirect('/post')라고 입력하면 하드 코딩(고정된 URL)이라, 비효율적임.
+            # 따라서, 하기와 같이 동적으로 입력하기 위해선,
+            # URL 패턴의 name을 입력해야 하는데,
+            # 이 때, redirect는 받은 인자를 확인해보니,
+            # URL이 아니므로, 이 인자(여기선 name)를 urls.py에서 찾음.
+            # 이름을 갖고 찾은 url로 가라고 browser에게 전달함.
+            # return redirect('post_list')
+            # redirect 메서드는 인자로 주어진
+            # URL 또는
+            # urlpatterns의 name을 이용해 만들어낸 URL을 사용해서
+            # 브라우저가 해당 URL로 이동하도록 해줌.
+            # redirect는 인자를 URL로도 받을 수 있음.
+            # return redirect('http://www.google.co.kr')
 
-        # redirect vs ReverseMatch
-        # template에서는 역참조를 하는 것이고,
-        # 이 때, 역참조를 ReverseMatch라고 하는 것임.
-        # url name이랑 인자를 가지고 정규식 패턴에 해당하는 문자열을 만드는 것.
-        # view에서는 역참조가 아니고, redirect()라는 함수를 써서,
-        # urlpattern에 있는 name을 보구 알아서 판단해서 브라우저에게
-        # 이동하라고 하는 함수임. ReverseMatch처럼 해당 문자열을 만드는 것이 아니고,
-        # 그 위치로 이동해주는 함수 역할을 하는 것.
+            # redirect vs ReverseMatch
+            # template에서는 역참조를 하는 것이고,
+            # 이 때, 역참조를 ReverseMatch라고 하는 것임.
+            # url name이랑 인자를 가지고 정규식 패턴에 해당하는 문자열을 만드는 것.
+            # view에서는 역참조가 아니고, redirect()라는 함수를 써서,
+            # urlpattern에 있는 name을 보구 알아서 판단해서 브라우저에게
+            # 이동하라고 하는 함수임. ReverseMatch처럼 해당 문자열을 만드는 것이 아니고,
+            # 그 위치로 이동해주는 함수 역할을 하는 것.
 
-        # Mission : return redirect('post_list') 처럼
-        # post_detail 도 구현해보기.
-        # 구현 방법 :
-        # By passing the name of a view (여기선 post_detail)and
-        # optionally some positional or keyword(여기선 urlpatterns에 있는 post_id) arguments
-        # post detail 화면으로 이동. 키워드(urlpatterns에 있는 post_id)의 인자로, p.id를 전달함.
-        return redirect('post_detail', post_id=p.id)
+            # Mission : return redirect('post_list') 처럼
+            # post_detail 도 구현해보기.
+            # 구현 방법 :
+            # By passing the name of a view (여기선 post_detail)and
+            # optionally some positional or keyword(여기선 urlpatterns에 있는 post_id) arguments
+            # post detail 화면으로 이동. 키워드(urlpatterns에 있는 post_id)의 인자로, p.id를 전달함.
+            return redirect('post_detail', post_id=p.id)
+        else :
+            return HttpResponse('Form Invalid')
 
     # 요청의 method가 POST가 아닌 경우,
     # 글 쓰기 양식이 있는 템플릿을 렌더해서 리턴
     else:
         # request의 method에 따른 방법. 여기서는 페이지를 보여주는 부분
-        return render(request, 'blog/post-add.html')
+        # return render(request, 'blog/post-add.html')
+
+        # PostForm형 객체를 만들어 context에 전달
+        # context에 전달했으니까, templates에서 쓸 수 있게 됐으니,
+        # post-add.html templates로 가서 form 관련 작업을 하자.
+        form = PostForm()
+        context = {
+            'forms': form,
+        }
+        return render(request, 'blog/post-add.html', context)

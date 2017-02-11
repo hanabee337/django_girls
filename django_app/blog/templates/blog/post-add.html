@@ -31,14 +31,14 @@ Mission :
 <form action="" method="POST">{% csrf_token %}
     <fieldset>
         <legend>Add post</legend>
+
+        {% for field in forms %}
         <div>
-            <label for="">Title</label>
-            <input name="input_title" type="text">
+            {{ field.label_tag }}
+            {{ field }}
         </div>
-        <div>
-            <label for="">Content</label>
-            <textarea name="input_content" id="" cols=30" rows="10"></textarea>
-         </div>
+        {% endfor %}
+
         <button type="submit">Write Post</button>
     </fieldset>
 </form>
