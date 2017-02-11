@@ -141,7 +141,7 @@ def post_add(request):
         # 이 때, redirect는 받은 인자를 확인해보니,
         # URL이 아니므로, 이 인자(여기선 name)를 urls.py에서 찾음.
         # 이름을 갖고 찾은 url로 가라고 browser에게 전달함.
-        return redirect('post_list')
+        # return redirect('post_list')
         # redirect 메서드는 인자로 주어진
         # URL 또는
         # urlpatterns의 name을 이용해 만들어낸 URL을 사용해서
@@ -158,6 +158,13 @@ def post_add(request):
         # 이동하라고 하는 함수임. ReverseMatch처럼 해당 문자열을 만드는 것이 아니고,
         # 그 위치로 이동해주는 함수 역할을 하는 것.
 
+        # Mission : return redirect('post_list') 처럼
+        # post_detail 도 구현해보기.
+        # 구현 방법 :
+        # By passing the name of a view (여기선 post_detail)and
+        # optionally some positional or keyword(여기선 urlpatterns에 있는 post_id) arguments
+        # post detail 화면으로 이동. 키워드(urlpatterns에 있는 post_id)의 인자로, p.id를 전달함.
+        return redirect('post_detail', post_id=p.id)
 
     # 요청의 method가 POST가 아닌 경우,
     # 글 쓰기 양식이 있는 템플릿을 렌더해서 리턴
