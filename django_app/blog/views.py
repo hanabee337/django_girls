@@ -141,13 +141,23 @@ def post_add(request):
         # 이 때, redirect는 받은 인자를 확인해보니,
         # URL이 아니므로, 이 인자(여기선 name)를 urls.py에서 찾음.
         # 이름을 갖고 찾은 url로 가라고 browser에게 전달함.
-        # return redirect('post_list')
+        return redirect('post_list')
         # redirect 메서드는 인자로 주어진
         # URL 또는
         # urlpatterns의 name을 이용해 만들어낸 URL을 사용해서
         # 브라우저가 해당 URL로 이동하도록 해줌.
         # redirect는 인자를 URL로도 받을 수 있음.
-        return redirect('http://www.google.co.kr')
+        # return redirect('http://www.google.co.kr')
+
+        # redirect vs ReverseMatch
+        # template에서는 역참조를 하는 것이고,
+        # 이 때, 역참조를 ReverseMatch라고 하는 것임.
+        # url name이랑 인자를 가지고 정규식 패턴에 해당하는 문자열을 만드는 것.
+        # view에서는 역참조가 아니고, redirect()라는 함수를 써서,
+        # urlpattern에 있는 name을 보구 알아서 판단해서 브라우저에게
+        # 이동하라고 하는 함수임. ReverseMatch처럼 해당 문자열을 만드는 것이 아니고,
+        # 그 위치로 이동해주는 함수 역할을 하는 것.
+
 
     # 요청의 method가 POST가 아닌 경우,
     # 글 쓰기 양식이 있는 템플릿을 렌더해서 리턴
