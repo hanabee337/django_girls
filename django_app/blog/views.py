@@ -43,8 +43,16 @@ from .models import Post
 from .forms import PostForm
 
 
+# def post_list(request):
+#     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+#     return render(request, 'blog/post_list.html', {'posts': posts})
+
 # urls.py에서 호출되어 실행
 def post_list(request):
+    # http://127.0.0.1:8000/에서 보여줄 텍스트
+    # post_list 메서드가 blog/urls.py의 urlpatterns에 보내진다.
+    # return HttpResponse('post_list view')
+    # return render(request, 'blog/post_list.html')
     context = {
         #     # 객체를 넘겨줄 때는 '_'로 구분
         #     'post_list': Post.objects.filter(
@@ -60,8 +68,9 @@ def post_list(request):
 # 여기서 post_id라는 인자는 임의의 이름이다. 따라서, 다른 이름으로 해도 상관없다.
 # urls.py의 url이 넘져주는 인자의 갯수와 post_detail함수의 인자 갯수와 같아야 한다.
 # post_id에 관한 테스트.
-# def post_detail(request, pst, any_str):
-# return HttpResponse('post_detail, post_id: {}, any_str:{}'.format(pst, any_str))
+# def post_detail(request, post_id):
+    # return HttpResponse('post_detail, post_id : {}'.format(post_id))
+
 def post_detail(request, post_id):
     # Error Handling (1)
     # try:
@@ -113,6 +122,8 @@ def post_add(request):
         # 여기서도 거기에 맞게 수정해야 한다.
         # title = data['input_title']
         # content = data['input_content']
+        # print(title)
+        # print(content)
         # PostForm에 data인자로 request.POST 데이터를 전달해준다.
         form = PostForm(data=request.POST)
         author = User.objects.get(id=1)
@@ -126,6 +137,13 @@ def post_add(request):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
 
+            # 여기까지만 하면, 입력은 되지만, 브라우저에서는 에러가 나고,
+            # console에서는 print 문만 확인이 된다.
+
+            # 그래서, 다음 2줄이 화면에 나오게끔 코드 추가
+            # ret = ','.join([title, content])
+            # return HttpResponse(ret)
+
             # 지금 조건에서 http://127.0.0.1:8000/post/add/ 로 접속하면 하기와 같은 에러가 발생함.
             # MultiValueDictKeyError
             # at  /post/add/
@@ -136,7 +154,8 @@ def post_add(request):
             # request의 method에 따라 처리를 달리 해줘야 함.
 
 
-            # Mission : 받은 데이터를 사용해서 Post 객체 생성
+            # Mission :
+            # 받은 데이터를 사용해서 Post 객체 생성
             #'Post created' 메세지 출력
             p = Post(title=title, content=content, author=author)
             p.save()
@@ -159,6 +178,9 @@ def post_add(request):
             # redirect는 인자를 URL로도 받을 수 있음.
             # return redirect('http://www.google.co.kr')
 
+            # 'Post created' 메세지 출력
+            # return HttpResponse('Post created')
+
             # redirect vs ReverseMatch
             # template에서는 역참조를 하는 것이고,
             # 이 때, 역참조를 ReverseMatch라고 하는 것임.
@@ -168,7 +190,8 @@ def post_add(request):
             # 이동하라고 하는 함수임. ReverseMatch처럼 해당 문자열을 만드는 것이 아니고,
             # 그 위치로 이동해주는 함수 역할을 하는 것.
 
-            # Mission : return redirect('post_list') 처럼
+            # Mission :
+            # return redirect('post_list') 처럼
             # post_detail 도 구현해보기.
             # 구현 방법 :
             # By passing the name of a view (여기선 post_detail)and
